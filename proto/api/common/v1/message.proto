@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package api.common.v1;
+
+option go_package = "github.com/cv65kr/order/api/common/v1;common";
+
+message Customer {
+  string firstName = 1;
+  string lastName = 2;
+}

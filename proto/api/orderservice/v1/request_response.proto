@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package api.orderservice.v1;
+
+option go_package = "github.com/cv65kr/order/api/orderservice/v1;orderservice";
+
+import "api/common/v1/message.proto";
+
+message CreateOrderRequest {
+    api.common.v1.Customer customer=1;
+}
+
+message CreateOrderResponse {
+    string id = 1;
+    api.common.v1.Customer customer=2;
+}

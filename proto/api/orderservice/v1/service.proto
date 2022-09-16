@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package api.orderservice.v1;
+
+option go_package = "github.com/cv65kr/order/api/orderservice/v1;orderservice";
+
+import "api/orderservice/v1/request_response.proto";
+
+service OrderService {
+  rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse) {
+  }
+}
