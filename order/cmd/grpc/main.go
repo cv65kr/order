@@ -13,19 +13,18 @@ import (
 
 func main() {
 	fx.New(
-		fx.Provide(ZapLoggerProvider),
-		fx.Invoke(GrpcServerHooks),
 		internal.Module,
+		fx.Invoke(GrpcServerHooks),
 	).Run()
 }
 
-func GrpcServerHooks(lifecycle fx.Lifecycle, logger *zap.Logger, handler *internal.Handler) {
+func GrpcServerHooks(lifecycle fx.Lifecycle, log *zap.Logger, handler *internal.WorkflowHandler) {
 	lifecycle.Append(
 		fx.Hook{
 			OnStart: func(context.Context) error {
 				lis, err := net.Listen("tcp", ":8081")
 				if err != nil {
-					logger.Fatal("failed to listen: %v", zap.Error(err))
+					log.Fatal("failed to listen: %v", zap.Error(err))
 				}
 				var opts []grpc.ServerOption
 				grpcServer := grpc.NewServer(opts...)
@@ -37,13 +36,8 @@ func GrpcServerHooks(lifecycle fx.Lifecycle, logger *zap.Logger, handler *intern
 				return nil
 			},
 			OnStop: func(context.Context) error {
-				return logger.Sync()
+				return log.Sync()
 			},
 		},
 	)
-}
-
-func ZapLoggerProvider() *zap.Logger {
-	logger, _ := zap.NewProduction()
-	return logger
 }
