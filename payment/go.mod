@@ -1,4 +1,4 @@
-module github.com/cv65kr/order
+module github.com/cv65kr/payment
 
 go 1.18
 
@@ -7,7 +7,6 @@ require (
 	go.temporal.io/sdk v1.17.0
 	go.uber.org/fx v1.18.1
 	go.uber.org/zap v1.23.0
-	google.golang.org/grpc v1.49.0
 )
 
 require (
@@ -18,7 +17,6 @@ require (
 	github.com/gogo/status v1.1.1 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
