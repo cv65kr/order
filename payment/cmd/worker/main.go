@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/cv65kr/order/internal"
+	"github.com/cv65kr/payment/internal"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
 	"go.uber.org/fx"
@@ -24,7 +24,7 @@ func TemporalWorkerHooks(lifecycle fx.Lifecycle, log *zap.Logger, temporalClient
 
 				// register workflow
 				w.RegisterWorkflow(internal.Workflow)
-				w.RegisterActivity(internal.SavePayment)
+				w.RegisterActivity(internal.CreatePayment)
 
 				err := w.Run(worker.InterruptCh())
 				if err != nil {

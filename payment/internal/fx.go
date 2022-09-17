@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/cv65kr/order/internal/zapdapter"
+	"github.com/cv65kr/payment/internal/zapdapter"
 	"go.temporal.io/sdk/client"
 	"go.uber.org/fx"
 	"go.uber.org/zap"

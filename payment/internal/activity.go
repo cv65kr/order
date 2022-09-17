@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-func SavePayment(ctx context.Context) error {
+func CreatePayment(ctx context.Context) error {
 	// eg store to database
 
 	return nil

@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"errors"
 	"github.com/cv65kr/order/api/common/v1"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/temporal"
@@ -15,6 +16,10 @@ type (
 	WorkflowHandler struct {
 		log            *zap.Logger
 		temporalClient client.Client
+	}
+
+	WorkflowSignal struct {
+		Message string
 	}
 )
 
@@ -69,6 +74,24 @@ func Workflow(ctx workflow.Context, customer *common.Customer) error {
 	err = workflow.ExecuteActivity(ctx, "CreatePayment").Get(ctx, nil)
 	if err != nil {
 		return err
+	}
+
+	// Waiting for signal from payment service
+	options = workflow.ActivityOptions{
+		TaskQueue:           "order-service",
+		StartToCloseTimeout: 5 * time.Minute,
+	}
+	ctx = workflow.WithActivityOptions(ctx, options)
+
+	var signal WorkflowSignal
+	signalChan := workflow.GetSignalChannel(ctx, "workflow-signal")
+	selector := workflow.NewSelector(ctx)
+	selector.AddReceive(signalChan, func(channel workflow.ReceiveChannel, more bool) {
+		channel.Receive(ctx, &signal)
+	})
+	selector.Select(ctx)
+	if len(signal.Message) > 0 && signal.Message != "Payment approved" {
+		return errors.New("invalid signal message from payment service")
 	}
 
 	return nil

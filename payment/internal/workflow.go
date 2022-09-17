@@ -26,7 +26,7 @@ func NewWorkflowHandler(log *zap.Logger, temporalClient client.Client) *Workflow
 	}
 }
 
-func Workflow(ctx workflow.Context) error {
+func Workflow(ctx workflow.Context) (string, error) {
 	retryPolicy := &temporal.RetryPolicy{
 		InitialInterval:    time.Second,
 		BackoffCoefficient: 2.0,
@@ -41,19 +41,20 @@ func Workflow(ctx workflow.Context) error {
 
 	ctx = workflow.WithActivityOptions(ctx, options)
 
-	err := workflow.ExecuteActivity(ctx, SavePayment).Get(ctx, nil)
+	err := workflow.ExecuteActivity(ctx, CreatePayment).Get(ctx, nil)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// Send signal to order service
 	signal := WorkflowSignal{
 		Message: "Payment approved",
 	}
+
 	err = workflow.SignalExternalWorkflow(ctx, "create-order-workflow", "", "workflow-signal", signal).Get(ctx, nil)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return "Finished", nil
 }
